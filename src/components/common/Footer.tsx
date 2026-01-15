@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Linkedin, Mail, Phone, ArrowUpRight } from 'lucide-react'
 import { personalInfo } from '@/data/content'
+import { trackResumeDownload } from '@/lib/supabase'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
@@ -84,6 +85,7 @@ export default function Footer() {
           <motion.a
             href="/assets/DerbinDavidraj_Resume.pdf"
             download
+            onClick={() => trackResumeDownload()}
             className="text-sm text-accent hover:text-accent-light transition-colors flex items-center gap-2"
             whileHover={{ x: 3 }}
           >

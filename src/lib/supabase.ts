@@ -213,3 +213,107 @@ export async function deleteImage(
 
   return true
 }
+
+// Analytics types
+export interface DBAnalytics {
+  id: string
+  event_type: 'resume_download' | 'project_view'
+  project_id?: string
+  created_at: string
+}
+
+// Track resume download
+export async function trackResumeDownload(): Promise<boolean> {
+  if (!supabase) {
+    // Store in localStorage as fallback
+    const downloads = JSON.parse(localStorage.getItem('resume_downloads') || '[]')
+    downloads.push({ timestamp: new Date().toISOString() })
+    localStorage.setItem('resume_downloads', JSON.stringify(downloads))
+    return true
+  }
+
+  const { error } = await supabase.from('analytics').insert([
+    { event_type: 'resume_download' },
+  ])
+
+  if (error) {
+    console.error('Error tracking resume download:', error)
+    return false
+  }
+
+  return true
+}
+
+// Track project view
+export async function trackProjectView(projectId: string): Promise<boolean> {
+  if (!supabase) {
+    const views = JSON.parse(localStorage.getItem('project_views') || '[]')
+    views.push({ project_id: projectId, timestamp: new Date().toISOString() })
+    localStorage.setItem('project_views', JSON.stringify(views))
+    return true
+  }
+
+  const { error } = await supabase.from('analytics').insert([
+    { event_type: 'project_view', project_id: projectId },
+  ])
+
+  if (error) {
+    console.error('Error tracking project view:', error)
+    return false
+  }
+
+  return true
+}
+
+// Get analytics stats
+export async function getAnalyticsStats(): Promise<{
+  resumeDownloads: number
+  projectViews: number
+}> {
+  if (!supabase) {
+    // Get from localStorage
+    const downloads = JSON.parse(localStorage.getItem('resume_downloads') || '[]')
+    const views = JSON.parse(localStorage.getItem('project_views') || '[]')
+    return {
+      resumeDownloads: downloads.length,
+      projectViews: views.length,
+    }
+  }
+
+  const { data: downloadData } = await supabase
+    .from('analytics')
+    .select('id')
+    .eq('event_type', 'resume_download')
+
+  const { data: viewData } = await supabase
+    .from('analytics')
+    .select('id')
+    .eq('event_type', 'project_view')
+
+  return {
+    resumeDownloads: downloadData?.length || 0,
+    projectViews: viewData?.length || 0,
+  }
+}
+
+// Upload resume
+export async function uploadResume(file: File): Promise<string | null> {
+  if (!supabase) return null
+
+  const fileName = `DerbinDavidraj_Resume.pdf`
+
+  // Delete old resume if exists
+  await supabase.storage.from('resumes').remove([fileName])
+
+  const { error } = await supabase.storage.from('resumes').upload(fileName, file, {
+    upsert: true,
+  })
+
+  if (error) {
+    console.error('Error uploading resume:', error)
+    return null
+  }
+
+  const { data } = supabase.storage.from('resumes').getPublicUrl(fileName)
+  return data.publicUrl
+}

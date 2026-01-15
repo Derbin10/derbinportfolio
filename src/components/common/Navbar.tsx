@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X } from 'lucide-react'
-import ThemeToggle from '../ui/ThemeToggle'
 
 const navLinks = [
   { name: 'Home', href: '#hero' },
@@ -38,7 +37,7 @@ export default function Navbar() {
       <motion.nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           isScrolled
-            ? 'bg-white/80 dark:bg-dark-bg/80 backdrop-blur-lg shadow-lg'
+            ? 'bg-dark-bg/90 backdrop-blur-lg shadow-lg border-b border-dark-border'
             : 'bg-transparent'
         }`}
         initial={{ y: -100 }}
@@ -59,26 +58,27 @@ export default function Navbar() {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center space-x-8">
-              {navLinks.map((link) => (
+              {navLinks.map((link, i) => (
                 <motion.button
                   key={link.name}
                   onClick={() => scrollToSection(link.href)}
-                  className="text-gray-700 dark:text-gray-300 hover:text-accent dark:hover:text-accent transition-colors font-medium"
+                  className="text-gray-300 hover:text-accent transition-colors font-medium"
                   whileHover={{ y: -2 }}
                   whileTap={{ scale: 0.95 }}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.1 }}
                 >
                   {link.name}
                 </motion.button>
               ))}
-              <ThemeToggle />
             </div>
 
             {/* Mobile Menu Button */}
-            <div className="flex md:hidden items-center space-x-4">
-              <ThemeToggle />
+            <div className="flex md:hidden items-center">
               <motion.button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="p-2 text-gray-700 dark:text-gray-300"
+                className="p-2 text-gray-300"
                 whileTap={{ scale: 0.9 }}
               >
                 {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -98,11 +98,11 @@ export default function Navbar() {
             exit={{ opacity: 0 }}
           >
             <div
-              className="absolute inset-0 bg-black/50"
+              className="absolute inset-0 bg-black/70 backdrop-blur-sm"
               onClick={() => setIsMobileMenuOpen(false)}
             />
             <motion.div
-              className="absolute top-20 left-0 right-0 bg-white dark:bg-dark-bg border-b border-light-border dark:border-dark-border"
+              className="absolute top-20 left-0 right-0 bg-dark-bg border-b border-dark-border"
               initial={{ y: -20, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -20, opacity: 0 }}
@@ -113,7 +113,7 @@ export default function Navbar() {
                   <motion.button
                     key={link.name}
                     onClick={() => scrollToSection(link.href)}
-                    className="block w-full text-left text-lg text-gray-700 dark:text-gray-300 hover:text-accent dark:hover:text-accent py-2"
+                    className="block w-full text-left text-lg text-gray-300 hover:text-accent py-2"
                     initial={{ x: -20, opacity: 0 }}
                     animate={{ x: 0, opacity: 1 }}
                     transition={{ delay: i * 0.05 }}

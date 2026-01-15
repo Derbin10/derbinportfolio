@@ -2,10 +2,15 @@ import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Mail, Phone, Linkedin, FileText, ArrowRight, MapPin } from 'lucide-react'
 import { personalInfo } from '@/data/content'
+import { trackResumeDownload } from '@/lib/supabase'
 
 export default function Contact() {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
+
+  const handleResumeDownload = () => {
+    trackResumeDownload()
+  }
 
   const contactLinks = [
     {
@@ -39,19 +44,27 @@ export default function Contact() {
   ]
 
   return (
-    <section id="contact" className="py-24 lg:py-32">
+    <section id="contact" className="py-24 lg:py-32 bg-dark-bg">
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
         <div ref={ref}>
           {/* Main CTA Block */}
           <motion.div
-            className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-900 to-gray-800 dark:from-gray-800 dark:to-gray-900 p-8 md:p-12 lg:p-16"
+            className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-800 to-gray-900 p-8 md:p-12 lg:p-16"
             initial={{ opacity: 0, y: 30 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6 }}
           >
             {/* Background decoration */}
-            <div className="absolute top-0 right-0 w-64 h-64 bg-accent/20 rounded-full blur-3xl" />
-            <div className="absolute bottom-0 left-0 w-48 h-48 bg-accent/10 rounded-full blur-3xl" />
+            <motion.div
+              className="absolute top-0 right-0 w-64 h-64 bg-accent/20 rounded-full blur-3xl"
+              animate={{ scale: [1, 1.2, 1], opacity: [0.2, 0.3, 0.2] }}
+              transition={{ duration: 8, repeat: Infinity }}
+            />
+            <motion.div
+              className="absolute bottom-0 left-0 w-48 h-48 bg-accent/10 rounded-full blur-3xl"
+              animate={{ scale: [1.2, 1, 1.2], opacity: [0.1, 0.2, 0.1] }}
+              transition={{ duration: 10, repeat: Infinity }}
+            />
 
             <div className="relative z-10">
               {/* Header */}
@@ -94,11 +107,14 @@ export default function Contact() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
                     transition={{ delay: 0.5 + i * 0.1 }}
-                    whileHover={{ x: 5 }}
+                    whileHover={{ x: 5, borderColor: 'rgba(99, 102, 241, 0.3)' }}
                   >
-                    <div className={`p-3 ${link.color} rounded-lg`}>
+                    <motion.div
+                      className={`p-3 ${link.color} rounded-lg`}
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                    >
                       <link.icon className="w-5 h-5 text-white" />
-                    </div>
+                    </motion.div>
                     <div className="flex-1">
                       <p className="text-sm text-gray-400">{link.label}</p>
                       <p className="font-medium text-white">{link.value}</p>
@@ -115,35 +131,43 @@ export default function Contact() {
                 animate={isInView ? { opacity: 1 } : {}}
                 transition={{ delay: 0.9 }}
               >
-                <a
+                <motion.a
                   href="/assets/DerbinDavidraj_Resume.pdf"
                   download
-                  className="inline-flex items-center gap-3 px-8 py-4 bg-accent hover:bg-accent-dark text-white rounded-xl font-semibold transition-all shadow-lg shadow-accent/25 hover:shadow-accent/40"
+                  onClick={handleResumeDownload}
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-accent hover:bg-accent/90 text-white rounded-xl font-semibold transition-all shadow-lg shadow-accent/25 hover:shadow-accent/40"
+                  whileHover={{ scale: 1.05, y: -3 }}
+                  whileTap={{ scale: 0.98 }}
                 >
                   <FileText className="w-5 h-5" />
                   Download Resume
                   <ArrowRight className="w-5 h-5" />
-                </a>
+                </motion.a>
               </motion.div>
             </div>
           </motion.div>
 
-          {/* Testimonial Placeholder */}
+          {/* Testimonial */}
           <motion.div
-            className="mt-12 p-6 bg-light-card dark:bg-dark-card rounded-2xl border border-light-border dark:border-dark-border"
+            className="mt-12 p-6 bg-dark-card rounded-2xl border border-dark-border"
             initial={{ opacity: 0 }}
             animate={isInView ? { opacity: 1 } : {}}
             transition={{ delay: 1 }}
+            whileHover={{ borderColor: 'rgba(99, 102, 241, 0.2)' }}
           >
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
+              <motion.div
+                className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0"
+                animate={{ scale: [1, 1.05, 1] }}
+                transition={{ duration: 3, repeat: Infinity }}
+              >
                 <span className="text-accent font-bold text-lg">"</span>
-              </div>
+              </motion.div>
               <div>
-                <p className="text-gray-600 dark:text-gray-400 italic mb-3">
+                <p className="text-gray-400 italic mb-3">
                   "Derbin delivers consistent, on-brand work with quick turnarounds. He takes ownership of projects and requires minimal direction. A reliable team member for design-heavy workloads."
                 </p>
-                <p className="text-sm text-gray-500 dark:text-gray-500">
+                <p className="text-sm text-gray-500">
                   — Team feedback from previous role
                 </p>
               </div>
