@@ -1,30 +1,25 @@
 import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { Cpu, Palette, Zap, Award } from 'lucide-react'
-import { personalInfo, education } from '@/data/content'
-import { AnimatedHeading } from '../ui/AnimatedText'
+import { Target, Layers, Zap, UserCheck, MapPin } from 'lucide-react'
+import { personalInfo } from '@/data/content'
 
-const highlights = [
-  {
-    icon: Palette,
-    title: 'Brand Identity',
-    description: 'Building consistent visual identities across all touchpoints',
-  },
-  {
-    icon: Zap,
-    title: 'Marketing Design',
-    description: 'Creating campaign-ready assets for digital platforms',
-  },
-  {
-    icon: Cpu,
-    title: 'AI-Assisted',
-    description: 'Using GenAI tools to accelerate design workflows',
-  },
-  {
-    icon: Award,
-    title: '3+ Years',
-    description: 'Professional experience in brand and marketing design',
-  },
+const specializations = [
+  'Brand identity & visual systems',
+  'Marketing creatives & campaign design',
+  'Layout-heavy work: brochures, guides, presentations, reports',
+  'Educational and parent-focused communication design',
+]
+
+const strengths = [
+  { icon: Target, title: 'Clarity', desc: 'I design with purpose and communication in mind.' },
+  { icon: Layers, title: 'Consistency', desc: 'I maintain brand alignment across every touchpoint.' },
+  { icon: Zap, title: 'Speed', desc: 'I execute quickly without compromising quality.' },
+  { icon: UserCheck, title: 'Ownership', desc: 'I handle projects end-to-end with minimal supervision.' },
+]
+
+const tools = [
+  'Adobe Illustrator', 'Adobe Photoshop', 'PowerPoint', 'CapCut',
+  'MS Word', 'Canva', 'Prompt Engineering'
 ]
 
 export default function About() {
@@ -33,119 +28,125 @@ export default function About() {
 
   return (
     <section id="about" className="py-24 lg:py-32 bg-light-card/50 dark:bg-dark-card/50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div ref={ref} className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Image Side */}
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div ref={ref} className="grid lg:grid-cols-5 gap-12 items-start">
+
+          {/* Image - 2 columns */}
           <motion.div
-            className="relative"
-            initial={{ opacity: 0, x: -50 }}
+            className="lg:col-span-2"
+            initial={{ opacity: 0, x: -30 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.8 }}
+            transition={{ duration: 0.6 }}
           >
-            {/* Main Image Container */}
-            <div className="relative aspect-[4/5] rounded-2xl overflow-hidden">
-              <div className="absolute inset-0 bg-gradient-to-br from-accent/20 to-accent/5" />
-              <img
-                src={personalInfo.profilePic}
-                alt={personalInfo.name}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  e.currentTarget.src = personalInfo.profilePic2
-                }}
-              />
-
-              {/* Overlay Gradient */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-
-              {/* Floating Badge */}
+            <div className="relative">
+              <div className="aspect-[3/4] rounded-2xl overflow-hidden bg-gray-100 dark:bg-dark-card">
+                <img
+                  src={personalInfo.profilePic}
+                  alt="Derbin Davidraj"
+                  className="w-full h-full object-cover"
+                  onError={(e) => { e.currentTarget.src = personalInfo.profilePic2 }}
+                />
+              </div>
+              {/* Location Badge */}
               <motion.div
-                className="absolute bottom-6 left-6 right-6 p-4 bg-white/90 dark:bg-dark-card/90 backdrop-blur-sm rounded-xl"
+                className="absolute -bottom-4 left-4 right-4 p-4 bg-white dark:bg-dark-card rounded-xl shadow-lg border border-light-border dark:border-dark-border"
                 initial={{ y: 20, opacity: 0 }}
                 animate={isInView ? { y: 0, opacity: 1 } : {}}
-                transition={{ delay: 0.5 }}
+                transition={{ delay: 0.4 }}
               >
                 <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 bg-accent/10 rounded-lg flex items-center justify-center">
-                    <Award className="w-6 h-6 text-accent" />
+                  <div className="p-2 bg-accent/10 rounded-lg">
+                    <MapPin className="w-5 h-5 text-accent" />
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-900 dark:text-white">
-                      {education.degree}
-                    </p>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      {education.institution}
-                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Open to relocate</p>
+                    <p className="font-medium text-gray-900 dark:text-white">Bangalore & Chennai</p>
                   </div>
                 </div>
               </motion.div>
             </div>
-
-            {/* Decorative Elements */}
-            <div className="absolute -top-4 -right-4 w-24 h-24 border-2 border-accent/30 rounded-2xl -z-10" />
-            <div className="absolute -bottom-4 -left-4 w-32 h-32 bg-accent/10 rounded-full blur-2xl -z-10" />
           </motion.div>
 
-          {/* Content Side */}
+          {/* Content - 3 columns */}
           <motion.div
-            initial={{ opacity: 0, x: 50 }}
+            className="lg:col-span-3 space-y-8"
+            initial={{ opacity: 0, x: 30 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
           >
-            {/* Section Label */}
-            <motion.span
-              className="inline-block text-accent font-medium mb-4"
-              initial={{ opacity: 0, y: 10 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.3 }}
-            >
-              About Me
-            </motion.span>
+            {/* Header */}
+            <div>
+              <span className="text-accent font-medium text-sm uppercase tracking-wider">About Me</span>
+              <h2 className="text-3xl lg:text-4xl font-display font-bold text-gray-900 dark:text-white mt-2 mb-4">
+                Hi, I'm Derbin
+              </h2>
+              <p className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed">
+                A Brand & Marketing Designer with 3+ years of experience turning ideas into clear, consistent, and meaningful visual communication.
+              </p>
+            </div>
 
-            {/* Heading */}
-            <AnimatedHeading
-              as="h2"
-              className="text-4xl lg:text-5xl font-display font-bold text-gray-900 dark:text-white mb-6"
-              delay={0.4}
-            >
-              Crafting Visual Stories
-            </AnimatedHeading>
+            {/* Specializations */}
+            <div>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-3">I specialize in:</h3>
+              <ul className="space-y-2">
+                {specializations.map((item, i) => (
+                  <motion.li
+                    key={i}
+                    className="flex items-start gap-3 text-gray-600 dark:text-gray-400"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={isInView ? { opacity: 1, x: 0 } : {}}
+                    transition={{ delay: 0.3 + i * 0.1 }}
+                  >
+                    <span className="w-1.5 h-1.5 bg-accent rounded-full mt-2 flex-shrink-0" />
+                    {item}
+                  </motion.li>
+                ))}
+              </ul>
+            </div>
 
-            {/* Description */}
-            <motion.p
-              className="text-lg text-gray-600 dark:text-gray-400 leading-relaxed mb-8"
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.6 }}
-            >
-              {personalInfo.summary}
-            </motion.p>
+            {/* AI Workflow Note */}
+            <div className="p-4 bg-accent/5 border border-accent/20 rounded-xl">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                <strong className="text-gray-900 dark:text-white">My workflow</strong> combines strong fundamentals with AI-assisted research and ideation. I use AI to understand topics quickly and explore directions — but the design thinking and final decisions always come from me.
+              </p>
+            </div>
 
-            {/* Highlights Grid */}
+            {/* Strengths Grid */}
             <div className="grid sm:grid-cols-2 gap-4">
-              {highlights.map((item, index) => (
+              {strengths.map((item, i) => (
                 <motion.div
                   key={item.title}
-                  className="p-4 bg-white dark:bg-dark-bg rounded-xl border border-light-border dark:border-dark-border group hover:border-accent transition-colors"
+                  className="p-4 bg-white dark:bg-dark-bg rounded-xl border border-light-border dark:border-dark-border"
                   initial={{ opacity: 0, y: 20 }}
                   animate={isInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ delay: 0.7 + index * 0.1 }}
-                  whileHover={{ y: -4 }}
+                  transition={{ delay: 0.5 + i * 0.1 }}
                 >
                   <div className="flex items-start gap-3">
-                    <div className="p-2 bg-accent/10 rounded-lg group-hover:bg-accent/20 transition-colors">
-                      <item.icon className="w-5 h-5 text-accent" />
+                    <div className="p-2 bg-accent/10 rounded-lg">
+                      <item.icon className="w-4 h-4 text-accent" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-gray-900 dark:text-white mb-1">
-                        {item.title}
-                      </h3>
-                      <p className="text-sm text-gray-600 dark:text-gray-400">
-                        {item.description}
-                      </p>
+                      <h4 className="font-semibold text-gray-900 dark:text-white">{item.title}</h4>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">{item.desc}</p>
                     </div>
                   </div>
                 </motion.div>
               ))}
+            </div>
+
+            {/* Tools */}
+            <div>
+              <h3 className="font-semibold text-gray-900 dark:text-white mb-3">Tools I work with:</h3>
+              <div className="flex flex-wrap gap-2">
+                {tools.map((tool) => (
+                  <span
+                    key={tool}
+                    className="px-3 py-1.5 bg-gray-100 dark:bg-dark-border rounded-lg text-sm text-gray-700 dark:text-gray-300"
+                  >
+                    {tool}
+                  </span>
+                ))}
+              </div>
             </div>
           </motion.div>
         </div>

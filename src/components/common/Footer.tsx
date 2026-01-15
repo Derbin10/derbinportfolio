@@ -1,104 +1,95 @@
 import { motion } from 'framer-motion'
-import { Heart, Linkedin, Mail, Phone } from 'lucide-react'
-import { personalInfo, socialLinks } from '@/data/content'
-
-const iconMap: Record<string, React.ElementType> = {
-  linkedin: Linkedin,
-}
+import { Linkedin, Mail, Phone, ArrowUpRight } from 'lucide-react'
+import { personalInfo } from '@/data/content'
 
 export default function Footer() {
   const currentYear = new Date().getFullYear()
 
   return (
-    <footer className="bg-light-card dark:bg-dark-card border-t border-light-border dark:border-dark-border">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+    <footer className="bg-gray-900 dark:bg-black text-white">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Main Footer */}
+        <div className="py-12 grid md:grid-cols-3 gap-8">
           {/* Brand */}
           <div>
-            <motion.h3
-              className="text-2xl font-display font-bold text-accent mb-4"
-              whileHover={{ scale: 1.02 }}
-            >
-              {personalInfo.name.split(' ')[0]}
-            </motion.h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
-              {personalInfo.title}
-              <span className="text-accent ml-2">({personalInfo.tagline})</span>
+            <h3 className="text-2xl font-display font-bold mb-2">Derbin Davidraj</h3>
+            <p className="text-gray-400 mb-4">
+              Brand & Marketing Designer<br />
+              <span className="text-accent">(GenAI-enabled)</span>
+            </p>
+            <p className="text-sm text-gray-500">
+              Creating clear, consistent visuals for brands and campaigns.
             </p>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="font-semibold text-gray-900 dark:text-white mb-4">
-              Quick Links
-            </h4>
+            <h4 className="font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              {['About', 'Projects', 'Experience', 'Contact'].map((link) => (
-                <li key={link}>
+              {[
+                { name: 'Selected Projects', href: '#projects' },
+                { name: 'About Me', href: '#about' },
+                { name: 'Experience', href: '#experience' },
+                { name: 'Contact', href: '#contact' },
+              ].map((link) => (
+                <li key={link.name}>
                   <a
-                    href={`#${link.toLowerCase()}`}
-                    className="text-gray-600 dark:text-gray-400 hover:text-accent dark:hover:text-accent transition-colors"
+                    href={link.href}
+                    className="text-gray-400 hover:text-white transition-colors inline-flex items-center gap-1"
                   >
-                    {link}
+                    {link.name}
                   </a>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Connect */}
+          {/* Contact */}
           <div>
-            <h4 className="font-semibold text-gray-900 dark:text-white mb-4">
-              Connect
-            </h4>
-            <div className="flex space-x-4 mb-4">
-              {socialLinks.map((social) => {
-                const Icon = iconMap[social.icon] || Mail
-                return (
-                  <motion.a
-                    key={social.id}
-                    href={social.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 bg-gray-100 dark:bg-dark-border rounded-lg text-gray-600 dark:text-gray-400 hover:bg-accent hover:text-white transition-colors"
-                    whileHover={{ y: -3 }}
-                    whileTap={{ scale: 0.95 }}
-                    title={social.platform}
-                  >
-                    <Icon size={20} />
-                  </motion.a>
-                )
-              })}
-            </div>
-            <div className="space-y-2">
+            <h4 className="font-semibold mb-4">Get in Touch</h4>
+            <div className="space-y-3">
               <a
                 href={`mailto:${personalInfo.email}`}
-                className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-accent transition-colors"
+                className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors"
               >
-                <Mail size={16} />
+                <Mail className="w-4 h-4" />
                 {personalInfo.email}
               </a>
               <a
                 href={`https://wa.me/${personalInfo.whatsapp}`}
+                className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors"
+              >
+                <Phone className="w-4 h-4" />
+                +91 {personalInfo.phone}
+              </a>
+              <a
+                href="https://www.linkedin.com/in/derbin1234/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-accent transition-colors"
+                className="flex items-center gap-3 text-gray-400 hover:text-white transition-colors"
               >
-                <Phone size={16} />
-                +91 {personalInfo.phone}
+                <Linkedin className="w-4 h-4" />
+                LinkedIn
+                <ArrowUpRight className="w-3 h-3" />
               </a>
             </div>
           </div>
         </div>
 
-        {/* Bottom */}
-        <div className="mt-12 pt-8 border-t border-light-border dark:border-dark-border flex flex-col md:flex-row items-center justify-between">
-          <p className="text-gray-500 dark:text-gray-500 text-sm flex items-center">
-            Made with <Heart className="w-4 h-4 mx-1 text-red-500" /> by {personalInfo.name}
+        {/* Bottom Bar */}
+        <div className="py-6 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-sm text-gray-500">
+            © {currentYear} Derbin Davidraj. All rights reserved.
           </p>
-          <p className="text-gray-500 dark:text-gray-500 text-sm mt-2 md:mt-0">
-            &copy; {currentYear} All rights reserved.
-          </p>
+          <motion.a
+            href="/assets/DerbinDavidraj_Resume.pdf"
+            download
+            className="text-sm text-accent hover:text-accent-light transition-colors flex items-center gap-2"
+            whileHover={{ x: 3 }}
+          >
+            Download Resume
+            <ArrowUpRight className="w-4 h-4" />
+          </motion.a>
         </div>
       </div>
     </footer>

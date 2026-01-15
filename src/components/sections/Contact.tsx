@@ -1,282 +1,153 @@
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
-import { useForm } from 'react-hook-form'
-import { Send, Mail, MapPin, Phone, CheckCircle, AlertCircle } from 'lucide-react'
+import { Mail, Phone, Linkedin, FileText, ArrowRight, MapPin } from 'lucide-react'
 import { personalInfo } from '@/data/content'
-import { AnimatedHeading } from '../ui/AnimatedText'
-import Button from '../ui/Button'
-
-interface FormData {
-  name: string
-  email: string
-  message: string
-}
 
 export default function Contact() {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle')
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm<FormData>()
-
-  const onSubmit = async (data: FormData) => {
-    setIsSubmitting(true)
-    setSubmitStatus('idle')
-
-    try {
-      // Simulate API call - replace with actual Supabase integration
-      await new Promise((resolve) => setTimeout(resolve, 1500))
-      console.log('Form submitted:', data)
-      setSubmitStatus('success')
-      reset()
-    } catch {
-      setSubmitStatus('error')
-    } finally {
-      setIsSubmitting(false)
-    }
-  }
-
-  const contactInfo = [
+  const contactLinks = [
     {
       icon: Mail,
       label: 'Email',
       value: personalInfo.email,
       href: `mailto:${personalInfo.email}`,
+      color: 'bg-blue-500',
     },
     {
       icon: Phone,
       label: 'Phone / WhatsApp',
       value: `+91 ${personalInfo.phone}`,
       href: `https://wa.me/${personalInfo.whatsapp}`,
+      color: 'bg-green-500',
+    },
+    {
+      icon: Linkedin,
+      label: 'LinkedIn',
+      value: 'Connect with me',
+      href: 'https://www.linkedin.com/in/derbin1234/',
+      color: 'bg-blue-600',
     },
     {
       icon: MapPin,
       label: 'Location',
       value: 'View on Map',
       href: personalInfo.mapUrl,
-      external: true,
+      color: 'bg-red-500',
     },
   ]
 
   return (
-    <section id="contact" className="py-24 lg:py-32 bg-light-card/50 dark:bg-dark-card/50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <motion.span
-            className="inline-block text-accent font-medium mb-4"
-            initial={{ opacity: 0, y: 10 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-          >
-            Get in Touch
-          </motion.span>
-          <AnimatedHeading
-            as="h2"
-            className="text-4xl lg:text-5xl font-display font-bold text-gray-900 dark:text-white mb-6"
-          >
-            Let's Work Together
-          </AnimatedHeading>
-          <motion.p
-            className="max-w-2xl mx-auto text-gray-600 dark:text-gray-400 text-lg"
-            initial={{ opacity: 0, y: 20 }}
-            animate={isInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ delay: 0.3 }}
-          >
-            Have a project in mind? I'd love to hear about it. Send me a message and let's create something amazing.
-          </motion.p>
-        </div>
-
-        <div ref={ref} className="grid lg:grid-cols-2 gap-12">
-          {/* Contact Form */}
+    <section id="contact" className="py-24 lg:py-32">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div ref={ref}>
+          {/* Main CTA Block */}
           <motion.div
-            className="p-8 bg-white dark:bg-dark-card rounded-2xl border border-light-border dark:border-dark-border shadow-xl"
-            initial={{ opacity: 0, x: -50 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ delay: 0.2 }}
+            className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-900 to-gray-800 dark:from-gray-800 dark:to-gray-900 p-8 md:p-12 lg:p-16"
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6 }}
           >
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-              {/* Name Field */}
-              <div>
-                <label
-                  htmlFor="name"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+            {/* Background decoration */}
+            <div className="absolute top-0 right-0 w-64 h-64 bg-accent/20 rounded-full blur-3xl" />
+            <div className="absolute bottom-0 left-0 w-48 h-48 bg-accent/10 rounded-full blur-3xl" />
+
+            <div className="relative z-10">
+              {/* Header */}
+              <div className="text-center mb-12">
+                <motion.span
+                  className="inline-block text-accent font-medium mb-4"
+                  initial={{ opacity: 0 }}
+                  animate={isInView ? { opacity: 1 } : {}}
+                  transition={{ delay: 0.2 }}
                 >
-                  Your Name
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  {...register('name', { required: 'Name is required' })}
-                  className={`w-full px-4 py-3 bg-gray-50 dark:bg-dark-bg border rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent transition-all ${
-                    errors.name
-                      ? 'border-red-500'
-                      : 'border-light-border dark:border-dark-border'
-                  }`}
-                  placeholder="John Doe"
-                />
-                {errors.name && (
-                  <p className="mt-1 text-sm text-red-500">{errors.name.message}</p>
-                )}
+                  Let's Work Together
+                </motion.span>
+                <motion.h2
+                  className="text-3xl md:text-4xl lg:text-5xl font-display font-bold text-white mb-4"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ delay: 0.3 }}
+                >
+                  Got a project in mind?
+                </motion.h2>
+                <motion.p
+                  className="text-lg text-gray-400 max-w-2xl mx-auto"
+                  initial={{ opacity: 0 }}
+                  animate={isInView ? { opacity: 1 } : {}}
+                  transition={{ delay: 0.4 }}
+                >
+                  I'm open to new opportunities in marketing, education, SaaS, or content-heavy environments. Let's talk.
+                </motion.p>
               </div>
 
-              {/* Email Field */}
-              <div>
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                >
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  {...register('email', {
-                    required: 'Email is required',
-                    pattern: {
-                      value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                      message: 'Invalid email address',
-                    },
-                  })}
-                  className={`w-full px-4 py-3 bg-gray-50 dark:bg-dark-bg border rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent transition-all ${
-                    errors.email
-                      ? 'border-red-500'
-                      : 'border-light-border dark:border-dark-border'
-                  }`}
-                  placeholder="john@example.com"
-                />
-                {errors.email && (
-                  <p className="mt-1 text-sm text-red-500">{errors.email.message}</p>
-                )}
+              {/* Contact Grid */}
+              <div className="grid sm:grid-cols-2 gap-4 mb-10">
+                {contactLinks.map((link, i) => (
+                  <motion.a
+                    key={link.label}
+                    href={link.href}
+                    target={link.label === 'LinkedIn' || link.label === 'Location' ? '_blank' : undefined}
+                    rel={link.label === 'LinkedIn' || link.label === 'Location' ? 'noopener noreferrer' : undefined}
+                    className="group flex items-center gap-4 p-4 bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl transition-all"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={isInView ? { opacity: 1, y: 0 } : {}}
+                    transition={{ delay: 0.5 + i * 0.1 }}
+                    whileHover={{ x: 5 }}
+                  >
+                    <div className={`p-3 ${link.color} rounded-lg`}>
+                      <link.icon className="w-5 h-5 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-sm text-gray-400">{link.label}</p>
+                      <p className="font-medium text-white">{link.value}</p>
+                    </div>
+                    <ArrowRight className="w-5 h-5 text-gray-500 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                  </motion.a>
+                ))}
               </div>
 
-              {/* Message Field */}
-              <div>
-                <label
-                  htmlFor="message"
-                  className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
-                >
-                  Your Message
-                </label>
-                <textarea
-                  id="message"
-                  rows={5}
-                  {...register('message', {
-                    required: 'Message is required',
-                    minLength: {
-                      value: 10,
-                      message: 'Message must be at least 10 characters',
-                    },
-                  })}
-                  className={`w-full px-4 py-3 bg-gray-50 dark:bg-dark-bg border rounded-xl focus:ring-2 focus:ring-accent focus:border-transparent transition-all resize-none ${
-                    errors.message
-                      ? 'border-red-500'
-                      : 'border-light-border dark:border-dark-border'
-                  }`}
-                  placeholder="Tell me about your project..."
-                />
-                {errors.message && (
-                  <p className="mt-1 text-sm text-red-500">{errors.message.message}</p>
-                )}
-              </div>
-
-              {/* Submit Button */}
-              <Button
-                type="submit"
-                variant="primary"
-                size="lg"
-                className="w-full"
-                isLoading={isSubmitting}
+              {/* Resume CTA */}
+              <motion.div
+                className="text-center"
+                initial={{ opacity: 0 }}
+                animate={isInView ? { opacity: 1 } : {}}
+                transition={{ delay: 0.9 }}
               >
-                <Send className="w-5 h-5 mr-2" />
-                Send Message
-              </Button>
-
-              {/* Status Messages */}
-              {submitStatus === 'success' && (
-                <motion.div
-                  className="flex items-center gap-2 p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl text-green-700 dark:text-green-400"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
+                <a
+                  href="/assets/DerbinDavidraj_Resume.pdf"
+                  download
+                  className="inline-flex items-center gap-3 px-8 py-4 bg-accent hover:bg-accent-dark text-white rounded-xl font-semibold transition-all shadow-lg shadow-accent/25 hover:shadow-accent/40"
                 >
-                  <CheckCircle className="w-5 h-5" />
-                  <span>Message sent successfully! I'll get back to you soon.</span>
-                </motion.div>
-              )}
-
-              {submitStatus === 'error' && (
-                <motion.div
-                  className="flex items-center gap-2 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl text-red-700 dark:text-red-400"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                >
-                  <AlertCircle className="w-5 h-5" />
-                  <span>Something went wrong. Please try again later.</span>
-                </motion.div>
-              )}
-            </form>
+                  <FileText className="w-5 h-5" />
+                  Download Resume
+                  <ArrowRight className="w-5 h-5" />
+                </a>
+              </motion.div>
+            </div>
           </motion.div>
 
-          {/* Contact Info */}
+          {/* Testimonial Placeholder */}
           <motion.div
-            className="space-y-8"
-            initial={{ opacity: 0, x: 50 }}
-            animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ delay: 0.4 }}
+            className="mt-12 p-6 bg-light-card dark:bg-dark-card rounded-2xl border border-light-border dark:border-dark-border"
+            initial={{ opacity: 0 }}
+            animate={isInView ? { opacity: 1 } : {}}
+            transition={{ delay: 1 }}
           >
-            {/* Info Cards */}
-            {contactInfo.map((info, index) => (
-              <motion.a
-                key={info.label}
-                href={info.href}
-                target={info.external ? '_blank' : undefined}
-                rel={info.external ? 'noopener noreferrer' : undefined}
-                className="flex items-start gap-4 p-6 bg-white dark:bg-dark-card rounded-2xl border border-light-border dark:border-dark-border group hover:border-accent transition-colors"
-                initial={{ opacity: 0, y: 20 }}
-                animate={isInView ? { opacity: 1, y: 0 } : {}}
-                transition={{ delay: 0.5 + index * 0.1 }}
-                whileHover={{ x: 5 }}
-              >
-                <div className="p-3 bg-accent/10 rounded-xl group-hover:bg-accent/20 transition-colors">
-                  <info.icon className="w-6 h-6 text-accent" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-500 dark:text-gray-500 mb-1">
-                    {info.label}
-                  </p>
-                  <p className="text-lg font-medium text-gray-900 dark:text-white">
-                    {info.value}
-                  </p>
-                </div>
-              </motion.a>
-            ))}
-
-            {/* CTA Card */}
-            <motion.div
-              className="p-8 bg-gradient-to-br from-accent to-accent-dark rounded-2xl text-white"
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ delay: 0.8 }}
-            >
-              <h3 className="text-2xl font-display font-bold mb-4">
-                Ready to start a project?
-              </h3>
-              <p className="text-white/80 mb-6">
-                I'm currently available for freelance work and full-time opportunities.
-              </p>
-              <a
-                href="/assets/DerbinDavidraj_Resume.pdf"
-                download
-                className="inline-flex items-center gap-2 px-6 py-3 bg-white text-accent rounded-lg font-medium hover:bg-gray-100 transition-colors"
-              >
-                Download Resume
-              </a>
-            </motion.div>
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
+                <span className="text-accent font-bold text-lg">"</span>
+              </div>
+              <div>
+                <p className="text-gray-600 dark:text-gray-400 italic mb-3">
+                  "Derbin delivers consistent, on-brand work with quick turnarounds. He takes ownership of projects and requires minimal direction. A reliable team member for design-heavy workloads."
+                </p>
+                <p className="text-sm text-gray-500 dark:text-gray-500">
+                  — Team feedback from previous role
+                </p>
+              </div>
+            </div>
           </motion.div>
         </div>
       </div>
