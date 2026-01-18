@@ -11,10 +11,23 @@ import {
   X,
   Upload,
   Star,
+  Video,
+  FileText,
 } from 'lucide-react'
 import { useAuthContext } from '@/context/AuthContext'
 import { useProjects } from '@/hooks/useSupabase'
-import { createProject, updateProject, deleteProject, uploadImage, DBProject } from '@/lib/supabase'
+import {
+  createProject,
+  updateProject,
+  deleteProject,
+  uploadImage,
+  deleteImage,
+  uploadVideo,
+  deleteVideo,
+  uploadDocument,
+  deleteDocument,
+  DBProject,
+} from '@/lib/supabase'
 import Button from '@/components/ui/Button'
 import Modal from '@/components/ui/Modal'
 
@@ -25,6 +38,8 @@ interface ProjectForm {
   description: string
   is_featured: boolean
   thumbnail_url: string
+  video_url: string
+  pdf_url: string
 }
 
 export default function ProjectManager() {
@@ -38,7 +53,11 @@ export default function ProjectManager() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null)
   const [thumbnailPreview, setThumbnailPreview] = useState<string | null>(null)
+  const [videoPreview, setVideoPreview] = useState<string | null>(null)
+  const [pdfPreview, setPdfPreview] = useState<string | null>(null)
   const [uploadingThumb, setUploadingThumb] = useState(false)
+  const [uploadingVideo, setUploadingVideo] = useState(false)
+  const [uploadingPdf, setUploadingPdf] = useState(false)
 
   const {
     register,
@@ -88,6 +107,8 @@ export default function ProjectManager() {
     if (project) {
       setEditingProject(project)
       setThumbnailPreview(project.thumbnail_url)
+      setVideoPreview(project.video_url)
+      setPdfPreview(project.pdf_url)
       reset({
         title: project.title,
         slug: project.slug,
@@ -95,10 +116,14 @@ export default function ProjectManager() {
         description: project.description || '',
         is_featured: project.is_featured,
         thumbnail_url: project.thumbnail_url || '',
+        video_url: project.video_url || '',
+        pdf_url: project.pdf_url || '',
       })
     } else {
       setEditingProject(null)
       setThumbnailPreview(null)
+      setVideoPreview(null)
+      setPdfPreview(null)
       reset({
         title: '',
         slug: '',
@@ -106,6 +131,8 @@ export default function ProjectManager() {
         description: '',
         is_featured: false,
         thumbnail_url: '',
+        video_url: '',
+        pdf_url: '',
       })
     }
     setIsModalOpen(true)
@@ -123,10 +150,60 @@ export default function ProjectManager() {
     }
   }
 
+  const handleRemoveThumbnail = async () => {
+    if (thumbnailPreview) {
+      await deleteImage(thumbnailPreview)
+      setThumbnailPreview(null)
+      setValue('thumbnail_url', '')
+    }
+  }
+
+  const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploadingVideo(true)
+    const url = await uploadVideo(file)
+    setUploadingVideo(false)
+    if (url) {
+      setVideoPreview(url)
+      setValue('video_url', url)
+    }
+  }
+
+  const handleRemoveVideo = async () => {
+    if (videoPreview) {
+      await deleteVideo(videoPreview)
+      setVideoPreview(null)
+      setValue('video_url', '')
+    }
+  }
+
+  const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploadingPdf(true)
+    const url = await uploadDocument(file)
+    setUploadingPdf(false)
+    if (url) {
+      setPdfPreview(url)
+      setValue('pdf_url', url)
+    }
+  }
+
+  const handleRemovePdf = async () => {
+    if (pdfPreview) {
+      await deleteDocument(pdfPreview)
+      setPdfPreview(null)
+      setValue('pdf_url', '')
+    }
+  }
+
   const closeModal = () => {
     setIsModalOpen(false)
     setEditingProject(null)
     setThumbnailPreview(null)
+    setVideoPreview(null)
+    setPdfPreview(null)
     reset()
     // Clear URL params
     navigate('/admin/projects', { replace: true })
@@ -139,11 +216,15 @@ export default function ProjectManager() {
         await updateProject(editingProject.id, {
           ...data,
           thumbnail_url: data.thumbnail_url || null,
+          video_url: data.video_url || null,
+          pdf_url: data.pdf_url || null,
         })
       } else {
         await createProject({
           ...data,
           thumbnail_url: data.thumbnail_url || null,
+          video_url: data.video_url || null,
+          pdf_url: data.pdf_url || null,
           case_study: null,
           order_index: projects.length + 1,
         })
@@ -359,9 +440,18 @@ export default function ProjectManager() {
               Thumbnail Image
             </label>
             <div className="flex items-start gap-4">
-              <div className="w-32 h-24 bg-gray-100 dark:bg-dark-border rounded-lg overflow-hidden flex items-center justify-center">
+              <div className="w-32 h-24 bg-gray-100 dark:bg-dark-border rounded-lg overflow-hidden flex items-center justify-center relative">
                 {thumbnailPreview ? (
-                  <img src={thumbnailPreview} alt="Thumbnail" className="w-full h-full object-cover" />
+                  <>
+                    <img src={thumbnailPreview} alt="Thumbnail" className="w-full h-full object-cover" />
+                    <button
+                      type="button"
+                      onClick={handleRemoveThumbnail}
+                      className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </>
                 ) : (
                   <Upload className="w-8 h-8 text-gray-400" />
                 )}
@@ -383,6 +473,95 @@ export default function ProjectManager() {
                 </label>
                 <input type="hidden" {...register('thumbnail_url')} />
                 <p className="text-xs text-gray-500 mt-2">Recommended: 800x600px, JPG/PNG</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Video Upload */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Project Video
+            </label>
+            <div className="flex items-start gap-4">
+              <div className="w-32 h-24 bg-gray-100 dark:bg-dark-border rounded-lg overflow-hidden flex items-center justify-center relative">
+                {videoPreview ? (
+                  <>
+                    <video src={videoPreview} className="w-full h-full object-cover" muted />
+                    <button
+                      type="button"
+                      onClick={handleRemoveVideo}
+                      className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </>
+                ) : (
+                  <Video className="w-8 h-8 text-gray-400" />
+                )}
+              </div>
+              <div className="flex-1">
+                <input
+                  type="file"
+                  accept="video/*"
+                  onChange={handleVideoUpload}
+                  className="hidden"
+                  id="video-upload"
+                />
+                <label
+                  htmlFor="video-upload"
+                  className="inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-dark-border text-gray-700 dark:text-gray-300 rounded-lg cursor-pointer hover:bg-gray-200 dark:hover:bg-dark-border/70 transition-colors"
+                >
+                  <Video className="w-4 h-4 mr-2" />
+                  {uploadingVideo ? 'Uploading...' : 'Upload Video'}
+                </label>
+                <input type="hidden" {...register('video_url')} />
+                <p className="text-xs text-gray-500 mt-2">Supports MP4, WebM, MOV, AVI</p>
+              </div>
+            </div>
+          </div>
+
+          {/* PDF/Document Upload */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              Project PDF/Document
+            </label>
+            <div className="flex items-start gap-4">
+              <div className="w-32 h-24 bg-gray-100 dark:bg-dark-border rounded-lg overflow-hidden flex items-center justify-center relative">
+                {pdfPreview ? (
+                  <>
+                    <div className="flex flex-col items-center">
+                      <FileText className="w-8 h-8 text-accent" />
+                      <span className="text-xs text-gray-500 mt-1">PDF</span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleRemovePdf}
+                      className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </>
+                ) : (
+                  <FileText className="w-8 h-8 text-gray-400" />
+                )}
+              </div>
+              <div className="flex-1">
+                <input
+                  type="file"
+                  accept=".pdf,.doc,.docx,.ppt,.pptx"
+                  onChange={handlePdfUpload}
+                  className="hidden"
+                  id="pdf-upload"
+                />
+                <label
+                  htmlFor="pdf-upload"
+                  className="inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-dark-border text-gray-700 dark:text-gray-300 rounded-lg cursor-pointer hover:bg-gray-200 dark:hover:bg-dark-border/70 transition-colors"
+                >
+                  <FileText className="w-4 h-4 mr-2" />
+                  {uploadingPdf ? 'Uploading...' : 'Upload Document'}
+                </label>
+                <input type="hidden" {...register('pdf_url')} />
+                <p className="text-xs text-gray-500 mt-2">Supports PDF, DOC, DOCX, PPT, PPTX</p>
               </div>
             </div>
           </div>

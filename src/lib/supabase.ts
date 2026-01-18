@@ -18,6 +18,8 @@ export interface DBProject {
   slug: string
   category: string
   thumbnail_url: string | null
+  video_url: string | null
+  pdf_url: string | null
   description: string | null
   case_study: {
     problem: string
@@ -212,6 +214,70 @@ export async function deleteImage(
   }
 
   return true
+}
+
+// Generic file upload - supports any file type
+export async function uploadFile(
+  file: File,
+  bucket: string
+): Promise<string | null> {
+  if (!supabase) return null
+
+  const fileExt = file.name.split('.').pop()?.toLowerCase() || ''
+  const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`
+
+  const { error } = await supabase.storage.from(bucket).upload(fileName, file, {
+    cacheControl: '3600',
+    upsert: false,
+  })
+
+  if (error) {
+    console.error('Error uploading file:', error)
+    return null
+  }
+
+  const { data } = supabase.storage.from(bucket).getPublicUrl(fileName)
+  return data.publicUrl
+}
+
+// Delete any file from storage
+export async function deleteFile(
+  url: string,
+  bucket: string
+): Promise<boolean> {
+  if (!supabase) return false
+
+  const fileName = url.split('/').pop()
+  if (!fileName) return false
+
+  const { error } = await supabase.storage.from(bucket).remove([fileName])
+
+  if (error) {
+    console.error('Error deleting file:', error)
+    return false
+  }
+
+  return true
+}
+
+// Upload video file
+export async function uploadVideo(file: File): Promise<string | null> {
+  return uploadFile(file, 'project-videos')
+}
+
+// Delete video file
+export async function deleteVideo(url: string): Promise<boolean> {
+  return deleteFile(url, 'project-videos')
+}
+
+// Upload PDF/document file
+export async function uploadDocument(file: File): Promise<string | null> {
+  return uploadFile(file, 'project-documents')
+}
+
+// Delete document file
+export async function deleteDocument(url: string): Promise<boolean> {
+  return deleteFile(url, 'project-documents')
 }
 
 // Analytics types
