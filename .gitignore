@@ -38,3 +38,6 @@ coverage/
 # Temp files
 tmpclaude-*
 nul
+
+.vercel
+.env*.local
