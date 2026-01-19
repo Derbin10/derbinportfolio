@@ -1,4 +1,4 @@
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { ArrowLeft } from 'lucide-react'
 import { useState, useEffect } from 'react'
@@ -8,9 +8,15 @@ import PDFViewer from '@/components/ui/PDFViewer'
 
 export default function ProjectDetail() {
   const { slug } = useParams<{ slug: string }>()
+  const navigate = useNavigate()
   const [project, setProject] = useState<DBProject | null>(null)
   const [loading, setLoading] = useState(true)
   const [showPDF, setShowPDF] = useState(false)
+
+  // Go back to projects section
+  const goBackToProjects = () => {
+    navigate('/#projects')
+  }
 
   useEffect(() => {
     async function fetchProject() {
@@ -60,45 +66,12 @@ export default function ProjectDetail() {
   // If project has PDF, show PDF viewer (Behance-style full page view)
   if (project.pdf_url) {
     return (
-      <>
-        {/* Back button when PDF viewer is closed */}
-        {!showPDF && (
-          <motion.main
-            className="min-h-screen pt-24 pb-16 bg-light-bg dark:bg-dark-bg"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-          >
-            <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-              <Link
-                to="/#projects"
-                className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-accent transition-colors mb-8"
-              >
-                <ArrowLeft className="w-5 h-5" />
-                Back to Projects
-              </Link>
-
-              <h1 className="text-4xl font-display font-bold text-gray-900 dark:text-white mb-4">
-                {project.title}
-              </h1>
-              <p className="text-gray-600 dark:text-gray-400 mb-8">
-                {project.description}
-              </p>
-
-              <Button variant="primary" onClick={() => setShowPDF(true)}>
-                View Project
-              </Button>
-            </div>
-          </motion.main>
-        )}
-
-        {/* PDF Viewer - Behance style full screen */}
-        <PDFViewer
-          isOpen={showPDF}
-          onClose={() => setShowPDF(false)}
-          pdfUrl={project.pdf_url}
-          title={project.title}
-        />
-      </>
+      <PDFViewer
+        isOpen={true}
+        onClose={goBackToProjects}
+        pdfUrl={project.pdf_url}
+        title={project.title}
+      />
     )
   }
 

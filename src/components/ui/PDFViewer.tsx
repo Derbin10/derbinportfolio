@@ -60,15 +60,9 @@ export default function PDFViewer({ isOpen, onClose, pdfUrl, title }: PDFViewerP
     }
   }
 
-  // Handle contact - close viewer and scroll to contact
+  // Handle contact - navigate to contact section
   const handleContact = () => {
-    onClose()
-    setTimeout(() => {
-      const contactSection = document.querySelector('#contact')
-      if (contactSection) {
-        contactSection.scrollIntoView({ behavior: 'smooth' })
-      }
-    }, 300)
+    window.location.href = '/#contact'
   }
 
   // Handle scroll progress manually
@@ -333,8 +327,7 @@ export default function PDFViewer({ isOpen, onClose, pdfUrl, title }: PDFViewerP
                     Interested in working together?
                   </p>
                   <motion.a
-                    href="#contact"
-                    onClick={onClose}
+                    href="/#contact"
                     className="inline-flex items-center gap-2 px-6 py-3 bg-accent hover:bg-accent-dark text-white rounded-full font-medium transition-all"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
