@@ -13,9 +13,15 @@ export default function ProjectDetail() {
   const [loading, setLoading] = useState(true)
   const [showPDF, setShowPDF] = useState(false)
 
-  // Go back to projects section
+  // Go back to projects section without refresh
   const goBackToProjects = () => {
-    navigate('/#projects')
+    navigate('/')
+    setTimeout(() => {
+      const projectsSection = document.querySelector('#projects')
+      if (projectsSection) {
+        projectsSection.scrollIntoView({ behavior: 'smooth' })
+      }
+    }, 100)
   }
 
   useEffect(() => {
