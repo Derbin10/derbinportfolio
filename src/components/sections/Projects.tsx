@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { motion, useInView, AnimatePresence } from 'framer-motion'
 import { Eye, ArrowRight } from 'lucide-react'
 import { useProjects } from '@/hooks/useSupabase'
@@ -64,7 +65,8 @@ export default function Projects() {
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
                     transition={{ delay: 0.3 + index * 0.1 }}
                   >
-                    <div className="bg-white dark:bg-dark-card rounded-2xl border border-light-border dark:border-dark-border overflow-hidden hover:border-accent/50 transition-all hover:shadow-xl">
+                    <Link to={`/project/${project.slug}`} className="block">
+                    <div className="bg-white dark:bg-dark-card rounded-2xl border border-light-border dark:border-dark-border overflow-hidden hover:border-accent/50 transition-all hover:shadow-xl cursor-pointer">
                       {/* Thumbnail */}
                       <div className="relative aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-dark-bg">
                         {project.thumbnail_url ? (
@@ -112,6 +114,7 @@ export default function Projects() {
                         </span>
                       </div>
                     </div>
+                    </Link>
                   </motion.div>
                 ))}
               </AnimatePresence>
