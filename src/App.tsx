@@ -6,6 +6,7 @@ import ProjectDetail from './pages/ProjectDetail'
 import AdminLogin from './pages/admin/Login'
 import AdminDashboard from './pages/admin/Dashboard'
 import ProjectManager from './pages/admin/ProjectManager'
+import ResumeEditor from './pages/admin/ResumeEditor'
 import Navbar from './components/common/Navbar'
 import Footer from './components/common/Footer'
 import CustomCursor from './components/common/CustomCursor'
@@ -22,6 +23,7 @@ function AppContent() {
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
         <Route path="/admin/projects" element={<ProjectManager />} />
+        <Route path="/admin/resume" element={<ResumeEditor />} />
       </Routes>
     )
   }

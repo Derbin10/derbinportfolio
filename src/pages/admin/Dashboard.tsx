@@ -11,6 +11,7 @@ import {
   Download,
   FileText,
   Upload,
+  Edit3,
 } from 'lucide-react'
 import { useAuthContext } from '@/context/AuthContext'
 import { useProjects } from '@/hooks/useSupabase'
@@ -154,7 +155,7 @@ export default function AdminDashboard() {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-8">
           <Link to="/admin/projects">
             <Button variant="primary" className="w-full justify-center">
               <FolderOpen className="w-5 h-5 mr-2" />
@@ -165,6 +166,12 @@ export default function AdminDashboard() {
             <Button variant="outline" className="w-full justify-center">
               <Plus className="w-5 h-5 mr-2" />
               Add New Project
+            </Button>
+          </Link>
+          <Link to="/admin/resume">
+            <Button variant="outline" className="w-full justify-center">
+              <Edit3 className="w-5 h-5 mr-2" />
+              Edit Resume
             </Button>
           </Link>
           <div>
@@ -182,7 +189,7 @@ export default function AdminDashboard() {
               disabled={uploading}
             >
               <Upload className="w-5 h-5 mr-2" />
-              {uploading ? 'Uploading...' : 'Update Resume'}
+              {uploading ? 'Uploading...' : 'Upload PDF'}
             </Button>
           </div>
           <Link to="/" target="_blank">
@@ -272,7 +279,7 @@ export default function AdminDashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
         >
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between flex-wrap gap-4">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-accent/10 rounded-xl">
                 <FileText className="w-6 h-6 text-accent" />
@@ -280,13 +287,21 @@ export default function AdminDashboard() {
               <div>
                 <h3 className="font-semibold text-white">Resume Management</h3>
                 <p className="text-sm text-gray-400">
-                  Upload a new resume or check download stats
+                  Edit your resume content or upload a PDF
                 </p>
               </div>
             </div>
-            <div className="text-right">
-              <p className="text-2xl font-bold text-white">{analytics.resumeDownloads}</p>
-              <p className="text-sm text-gray-400">Total Downloads</p>
+            <div className="flex items-center gap-4">
+              <div className="text-right">
+                <p className="text-2xl font-bold text-white">{analytics.resumeDownloads}</p>
+                <p className="text-sm text-gray-400">Total Downloads</p>
+              </div>
+              <Link to="/admin/resume">
+                <Button variant="outline" size="sm">
+                  <Edit3 className="w-4 h-4 mr-2" />
+                  Edit Resume
+                </Button>
+              </Link>
             </div>
           </div>
         </motion.div>

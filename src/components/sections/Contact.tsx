@@ -2,11 +2,13 @@ import { useRef } from 'react'
 import { motion, useInView } from 'framer-motion'
 import { Mail, Phone, Linkedin, FileText, ArrowRight, MapPin } from 'lucide-react'
 import { personalInfo } from '@/data/content'
-import { trackResumeDownload } from '@/lib/supabase'
+import { trackResumeDownload, getResumeUrl } from '@/lib/supabase'
 
 export default function Contact() {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
+
+  const resumeUrl = getResumeUrl()
 
   const handleResumeDownload = () => {
     trackResumeDownload()
@@ -132,8 +134,9 @@ export default function Contact() {
                 transition={{ delay: 0.9 }}
               >
                 <motion.a
-                  href="/assets/DerbinDavidraj_Resume.pdf"
-                  download
+                  href={resumeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   onClick={handleResumeDownload}
                   className="inline-flex items-center gap-3 px-8 py-4 bg-accent hover:bg-accent/90 text-white rounded-xl font-semibold transition-all shadow-lg shadow-accent/25 hover:shadow-accent/40"
                   whileHover={{ scale: 1.05, y: -3 }}

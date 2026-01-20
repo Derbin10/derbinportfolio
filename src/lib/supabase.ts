@@ -383,3 +383,175 @@ export async function uploadResume(file: File): Promise<string | null> {
   const { data } = supabase.storage.from('resumes').getPublicUrl(fileName)
   return data.publicUrl
 }
+
+// Get resume URL from Supabase storage
+export function getResumeUrl(): string {
+  if (!supabase) {
+    // Fallback to static file if Supabase not configured
+    return '/assets/DerbinDavidraj_Resume.pdf'
+  }
+
+  const { data } = supabase.storage.from('resumes').getPublicUrl('DerbinDavidraj_Resume.pdf')
+  return data.publicUrl
+}
+
+// Resume Data Types
+export interface DBResumeData {
+  id: string
+  personal_info: {
+    name: string
+    title: string
+    email: string
+    phone: string
+    location: string
+    website: string
+    linkedin: string
+    portfolio: string
+  }
+  summary: string
+  experience: {
+    id: string
+    job_title: string
+    company: string
+    location: string
+    start_date: string
+    end_date: string
+    is_current: boolean
+    responsibilities: string[]
+  }[]
+  education: {
+    id: string
+    degree: string
+    field_of_study: string
+    institution: string
+    location: string
+    start_date: string
+    end_date: string
+    gpa?: string
+    achievements: string[]
+  }[]
+  skills: {
+    id: string
+    category: string
+    skills: string[]
+  }[]
+  certifications: {
+    id: string
+    name: string
+    issuer: string
+    date: string
+    credential_id?: string
+    url?: string
+  }[]
+  languages: {
+    id: string
+    name: string
+    proficiency: string
+  }[]
+  updated_at: string
+}
+
+// Default resume data
+const defaultResumeData: Omit<DBResumeData, 'id' | 'updated_at'> = {
+  personal_info: {
+    name: 'Derbin Davidraj',
+    title: 'Brand & Marketing Designer',
+    email: '',
+    phone: '',
+    location: '',
+    website: '',
+    linkedin: '',
+    portfolio: '',
+  },
+  summary: '',
+  experience: [],
+  education: [],
+  skills: [],
+  certifications: [],
+  languages: [],
+}
+
+// Get resume data
+export async function getResumeData(): Promise<DBResumeData | null> {
+  if (!supabase) {
+    // Return from localStorage as fallback
+    const stored = localStorage.getItem('resume_data')
+    if (stored) {
+      return JSON.parse(stored)
+    }
+    return { ...defaultResumeData, id: 'local', updated_at: new Date().toISOString() } as DBResumeData
+  }
+
+  const { data, error } = await supabase
+    .from('resume')
+    .select('*')
+    .single()
+
+  if (error) {
+    console.error('Error fetching resume data:', error)
+    // If no resume exists, return default
+    if (error.code === 'PGRST116') {
+      return { ...defaultResumeData, id: 'default', updated_at: new Date().toISOString() } as DBResumeData
+    }
+    return null
+  }
+
+  return data
+}
+
+// Save resume data
+export async function saveResumeData(
+  resumeData: Omit<DBResumeData, 'id' | 'updated_at'>
+): Promise<DBResumeData | null> {
+  if (!supabase) {
+    // Save to localStorage as fallback
+    const dataWithMeta = {
+      ...resumeData,
+      id: 'local',
+      updated_at: new Date().toISOString(),
+    }
+    localStorage.setItem('resume_data', JSON.stringify(dataWithMeta))
+    return dataWithMeta as DBResumeData
+  }
+
+  // Check if resume exists
+  const { data: existing } = await supabase
+    .from('resume')
+    .select('id')
+    .single()
+
+  if (existing) {
+    // Update existing
+    const { data, error } = await supabase
+      .from('resume')
+      .update({
+        ...resumeData,
+        updated_at: new Date().toISOString(),
+      })
+      .eq('id', existing.id)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Error updating resume:', error)
+      return null
+    }
+    return data
+  } else {
+    // Insert new
+    const { data, error } = await supabase
+      .from('resume')
+      .insert([{
+        ...resumeData,
+        updated_at: new Date().toISOString(),
+      }])
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Error creating resume:', error)
+      return null
+    }
+    return data
+  }
+}

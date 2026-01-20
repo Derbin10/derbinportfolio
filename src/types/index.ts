@@ -51,3 +51,71 @@ export interface SocialLink {
   url: string
   icon: string
 }
+
+// Resume Types
+export interface ResumeData {
+  id?: string
+  personal_info: PersonalInfo
+  summary: string
+  experience: ResumeExperience[]
+  education: Education[]
+  skills: ResumeSkill[]
+  certifications: Certification[]
+  languages: Language[]
+  updated_at?: string
+}
+
+export interface PersonalInfo {
+  name: string
+  title: string
+  email: string
+  phone: string
+  location: string
+  website: string
+  linkedin: string
+  portfolio: string
+}
+
+export interface ResumeExperience {
+  id: string
+  job_title: string
+  company: string
+  location: string
+  start_date: string
+  end_date: string
+  is_current: boolean
+  responsibilities: string[]
+}
+
+export interface Education {
+  id: string
+  degree: string
+  field_of_study: string
+  institution: string
+  location: string
+  start_date: string
+  end_date: string
+  gpa?: string
+  achievements: string[]
+}
+
+export interface ResumeSkill {
+  id: string
+  category: string
+  skills: string[]
+}
+
+export interface Certification {
+  id: string
+  name: string
+  issuer: string
+  date: string
+  credential_id?: string
+  url?: string
+}
+
+export interface Language {
+  id: string
+  name: string
+  proficiency: 'Native' | 'Fluent' | 'Advanced' | 'Intermediate' | 'Basic'
+}
