@@ -6,6 +6,11 @@ node_modules/
 # Build output
 dist/
 build/
+.next/
+next-env.d.ts
+*.tsbuildinfo
+_legacy-vite/node_modules/
+_legacy-vite/dist/
 
 # Environment files
 .env

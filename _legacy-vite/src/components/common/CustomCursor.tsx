@@ -75,7 +75,7 @@ export default function CustomCursor() {
       {/* Main cursor dot */}
       <motion.div
         ref={cursorRef}
-        className="fixed top-0 left-0 pointer-events-none z-[9999] mix-blend-difference"
+        className="fixed top-0 left-0 pointer-events-none z-[9999]"
         style={{
           x: cursorXSpring,
           y: cursorYSpring,
@@ -87,10 +87,11 @@ export default function CustomCursor() {
         transition={{ duration: 0.15 }}
       >
         <div
-          className="w-4 h-4 -ml-2 -mt-2 rounded-full bg-white"
+          className="w-4 h-4 -ml-2 -mt-2 rounded-full bg-accent border-2 border-white dark:border-gray-900"
           style={{
             transform: isHovering ? 'scale(2)' : 'scale(1)',
             transition: 'transform 0.2s ease',
+            boxShadow: '0 0 0 1px rgba(0,0,0,0.3)',
           }}
         />
       </motion.div>

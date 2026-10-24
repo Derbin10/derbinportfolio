@@ -1,70 +1,28 @@
-# Derbin Davidraj Portfolio - Development Standards
+﻿# Derbin Davidraj Portfolio (v3)
 
-## Project Overview
-A stunning graphic designer portfolio website for Derbin Davidraj - Brand & Marketing Designer (GenAI-enabled).
+Personal portfolio for Derbin Davidraj — Brand & Marketing Designer (brand systems, decks, reports, mascots, campaigns).
+Deployed on Vercel (project `derbinportfolio`, domain www.derbin.space). The v1 Vite app is archived in `_legacy-vite/` for reference only.
 
-## Tech Stack
-- **Frontend**: React 18 + Vite 5 + TypeScript
-- **Styling**: Tailwind CSS 3.4
-- **Animations**: GSAP 3 + Framer Motion 11
-- **Backend**: Supabase (Auth + Database + Storage)
-- **Deployment**: Vercel
+## Stack
+- Next.js 16 (App Router, Turbopack) + React 19 + TypeScript
+- Tailwind CSS v4 — tokens are CSS variables in `src/app/globals.css` (`.dark` flips a panel); rules in `DESIGN.md`
+- Motion (`motion/react`) for reveals, gallery and cursor; always respect reduced motion
+- Supabase for projects (`projects` table) and contact messages (`contacts` table), read server-side only
 
-## Code Organization
+## Layout
+- `src/app/` — routes: `/`, `/work`, `/work/[slug]`, `/about`, `/contact` (+ server action), sitemap, robots, OG image
+- `src/components/` — UI pieces (header, footer, cards, gallery, services flow, timeline, cursor)
+- `src/content/site.ts` — copy: bio, services, process, experience timeline, tools
+- `src/content/projects.ts` — curated case studies (images in `public/work/<folder>/`)
+- `src/lib/projects.ts` — merges curated local case studies with Supabase rows by slug (local fields win; Supabase-only projects are added)
+- `supabase/migrations/` — run new files in the Supabase SQL editor
 
-### File Size Limit
-Keep files under 500 lines. Refactor into smaller modules when approaching this limit.
+## Adding a project
+Either add an entry to `src/content/projects.ts` with images in `public/work/<folder>/`, or insert a row in Supabase
+(`thumbnail_url` is required for it to show; see `002_portfolio_v2.sql` for the case-study columns).
 
-### Directory Structure
-```
-src/
-├── components/
-│   ├── ui/        # Reusable UI elements (Button, Card, Modal)
-│   ├── common/    # Layout components (Navbar, Footer, Loader)
-│   └── sections/  # Page sections (Hero, About, Projects)
-├── pages/         # Route-based pages
-├── hooks/         # Custom React hooks
-├── context/       # React Context providers
-├── lib/           # Utility functions and configs
-├── types/         # TypeScript type definitions
-└── data/          # Static content and data
-```
-
-## Coding Standards
-
-### TypeScript
-- Use strict mode
-- Define interfaces for all props and data structures
-- Avoid `any` type - use proper typing
-
-### React Components
-- Use functional components with hooks
-- Implement proper error boundaries
-- Use React.memo for expensive renders
-- Keep components focused and single-purpose
-
-### Styling
-- Use Tailwind CSS utility classes
-- Follow mobile-first responsive design
-- Use CSS custom properties for theme values
-- Keep consistent spacing using Tailwind scale
-
-### Animations
-- Use GSAP for complex scroll animations
-- Use Framer Motion for component transitions
-- Keep animations performant (use transform/opacity)
-- Respect reduced-motion preferences
-
-## Testing Checklist
-1. Run `npm run dev` - verify hot reload
-2. Test theme toggle (dark/light mode)
-3. Test all animations on scroll
-4. Test responsive design at all breakpoints
-5. Run `npm run build` - verify no TypeScript errors
-6. Test Lighthouse scores (target 90+)
+## Env
+`SUPABASE_URL` / `SUPABASE_ANON_KEY` (the old `VITE_SUPABASE_*` names are also accepted).
 
 ## Commands
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
+- `npm run dev` · `npm run build` · `npm run typecheck`
