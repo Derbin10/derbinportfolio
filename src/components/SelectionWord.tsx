@@ -12,7 +12,7 @@ export default function SelectionWord({ children, tag, delay = 1.6 }: { children
       <span className="text-accent-text">{children}</span>
       <motion.span
         aria-hidden
-        className="pointer-events-none absolute -inset-x-0.5 -inset-y-0.5 border sm:-inset-x-2 border-dashed border-accent-text/80"
+        className="pointer-events-none absolute -inset-x-1 -inset-y-0.5 border-dashed border border-accent-text/80"
         initial={reduce ? false : { opacity: 0, scale: 1.08 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ delay, duration: 0.5, ease: [0.25, 1, 0.5, 1] }}

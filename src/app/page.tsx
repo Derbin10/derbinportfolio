@@ -48,7 +48,7 @@ export default async function HomePage() {
               <span className="sr-only">{site.name}. </span>
               <MaskedHero word="DERBIN" art="/images/hero-art.jpg" />
               <Reveal as="span" delay={0.9} className="mt-8 block max-w-[24ch] text-h2 font-semibold md:mt-12">
-                I design <span className="whitespace-nowrap"><SelectionWord tag="Brand systems · layer 01">brand systems</SelectionWord>,</span> reports and campaigns for B2B companies.
+                I design{' '}<span className="ml-1.5 whitespace-nowrap"><SelectionWord tag="Brand systems · layer 01">brand systems</SelectionWord>,</span> reports and campaigns for B2B companies.
               </Reveal>
             </h1>
 
